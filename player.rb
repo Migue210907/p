@@ -61,7 +61,27 @@ module Irrgarten
     end
 
     def receive_reward
-      raise NotImplementedError
+      w_reward=Dice.weapons_reward
+      s_reward=Dice.shields_reward
+
+      i=1
+      while i <= w_reward
+        wnew=new_weapon
+        receive_weapon(wnew)
+        i+=1
+      end
+
+      j=1
+      while j <= s_reward
+        snew=new_shield
+        receive_shield(snew)
+        j+=1
+      end
+
+      extra_health=Dice.health_reward
+
+      @health+=extra_health
+
     end
 
     def to_s
@@ -86,7 +106,20 @@ module Irrgarten
     end
 
     def receive_shield(s)
-      raise NotImplementedError
+      @shields.dup.each do |si|
+      
+        discard = Dice.discard_element
+      
+        if discard
+          @shields.delete(si)
+        end
+      end
+
+      size=@shields.size
+
+      if size<@@MAX_SHIELDS
+        @shields << s
+      end
     end
 
     def new_weapon
@@ -122,7 +155,23 @@ module Irrgarten
     end
 
     def manage_hit(received_attack)
-      raise NotImplementedError
+      defense=defensive_energy
+
+      if defense<received_attack
+        got_wounded
+        inc_consecutive_hits
+      else
+        reset_hits
+      end
+
+      if @consecutive_hits==@@HITS2LOSE || dead
+        reset_hits
+        lose=true
+      else
+        lose=false
+      end
+
+      lose
     end
 
     def reset_hits
