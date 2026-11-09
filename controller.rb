@@ -1,4 +1,4 @@
-module Control
+module Irrgarten
 
   class Controller
     def initialize(game,view)

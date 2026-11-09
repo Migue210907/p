@@ -70,8 +70,8 @@ module Irrgarten
       old_row=player.get_row
       old_col=player.get_col
 
-      new_pos=dir_2_pos(old_row,old_col,direction)
-      put_player_2D(old_row,old_col,new_pos[ROW],new_pos[COL],player)
+      new_pos=dir2_pos(old_row,old_col,direction)
+      put_player_2d(old_row,old_col,new_pos[@@ROW],new_pos[@@COL],player)
     end
 
     # Se implementará en P3
@@ -87,7 +87,7 @@ module Irrgarten
       row=start_row
       col=start_col
 
-      whilepos_ok(row,col) && empty_pos(row,col) && length>0
+      while pos_ok(row,col) && empty_pos(row,col) && length>0
         @labyrinth[row][col]=@@BLOCK_CHAR
 
         length-=1
@@ -211,7 +211,7 @@ module Irrgarten
           output=@monsters[row][col]
         else
           number=player.get_number
-          @labyrirnth[row][col]=number
+          @labyrinth[row][col]=number
         end
 
         @players[row][col]=player

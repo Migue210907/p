@@ -106,18 +106,11 @@ module Irrgarten
     end
 
     def receive_shield(s)
-      @shields.dup.each do |si|
-      
-        discard = Dice.discard_element
-      
-        if discard
-          @shields.delete(si)
-        end
+      @shields.delete_if do |shield|
+        shield.discard
       end
 
-      size=@shields.size
-
-      if size<@@MAX_SHIELDS
+      if @shields.size < @@MAX_SHIELDS
         @shields << s
       end
     end

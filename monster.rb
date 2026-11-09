@@ -40,7 +40,7 @@ module Irrgarten
       is_dead=dead
       if !is_dead
         defensive_energy=Dice.intensity(@intelligence)
-        if defensiveEnergy<received_attack
+        if defensive_energy<received_attack
           got_wounded
         end
         is_dead=dead

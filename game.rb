@@ -4,16 +4,12 @@ module Irrgarten
 
     @@MAX_ROUNDS = 10
 
-    def initialize(n_players)
+    def initialize(n_players, debug=false)
       @players = []
       @monsters = []
 
       n_players.times do |i|
-        @players << Player.new(
-          i.to_s,
-          Dice.random_intelligence,
-          Dice.random_strength
-        )
+        @players << Player.new(i.to_s, Dice.random_intelligence, Dice.random_strength)
       end
 
       @current_player_index = Dice.who_starts(n_players)
@@ -23,7 +19,12 @@ module Irrgarten
 
       @labyrinth = Labyrinth.new(5, 5, 4, 4)
 
-      configure_labyrinth
+      if debug
+        configure_labyrinth_debug
+      else
+        configure_labyrinth
+      end
+      
       @labyrinth.spread_players(@players)
     end
 
@@ -51,7 +52,7 @@ module Irrgarten
       else
         manage_resurrection
       end
-      endGame=finished
+      end_game=finished
       if !end_game
         next_player
       end
@@ -110,6 +111,15 @@ module Irrgarten
       end
     end
 
+    def configure_labyrinth_debug
+      @labyrinth.add_block(Orientation::VERTICAL, 1, 1, 2)
+      
+      monster = Monster.new("Monster #Debug", Dice.random_intelligence, Dice.random_strength)
+      @monsters << monster
+      
+      @labyrinth.add_monster(1, 0, monster)
+    end
+
 
     def next_player
       @current_player_index =
@@ -123,7 +133,7 @@ module Irrgarten
     def actual_direction(preferred_direction)
       current_row=@current_player.row
       current_col=@current_player.col
-      valid_moves=@labyrinth.valid_moves(currentRow, currentCol)
+      valid_moves=@labyrinth.valid_moves(current_row, current_col)
       output=@current_player.move(preferred_direction, valid_moves)
       output
     end

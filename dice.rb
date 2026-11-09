@@ -79,7 +79,7 @@ module Irrgarten
 
       random_number = @@generator.rand * @@max_uses
 
-      random_number >= uses_left
+      random_number > uses_left
     end
 
   end
