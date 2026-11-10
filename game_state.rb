@@ -10,13 +10,7 @@ module Irrgarten
     attr_reader :log
 
 
-    def initialize(labyrinth,
-                   players,
-                   monsters,
-                   current_player,
-                   winner,
-                   log)
-
+    def initialize(labyrinth,players, monsters,current_player,winner,log)
       @labyrinth = labyrinth
       @players = players
       @monsters = monsters

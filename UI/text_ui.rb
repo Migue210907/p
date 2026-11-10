@@ -1,6 +1,7 @@
 
 require 'io/console'
-require_relative 'directions'
+require_relative '../directions'
+require_relative '../game_state'
 
 module UI
 
@@ -57,11 +58,27 @@ module UI
     end
 
     def show_game(game_state)
+      puts "\nCURRENT PLAYER: #{game_state.current_player}"
 
+      puts "\nLABYRINTH:"
+      puts game_state.labyrinth
+
+      puts "PLAYERS:"
+      puts game_state.players
+
+      puts "MONSTERS:"
+      puts game_state.monsters
+
+      puts "LOGS:"
+      puts game_state.log
+
+      if game_state.winner
+        puts "HAY UN GANADOR"
+      end
     end
 
-  end # class   
+  end
 
-end # module   
+end 
 
 

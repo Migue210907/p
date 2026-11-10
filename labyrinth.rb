@@ -1,3 +1,4 @@
+#encoding:utf-8
 module Irrgarten
 
   class Labyrinth
@@ -35,8 +36,7 @@ module Irrgarten
     def spread_players(players)
       players.each do |p|
         pos=random_empty_pos
-        put_player_2d(-1,-1,pos[ROW],pos[COL], p)
-
+        put_player_2d(-1,-1,pos[@@ROW],pos[@@COL], p)
       end
     end
 
@@ -67,16 +67,14 @@ module Irrgarten
     end
 
     def put_player(direction, player)
-      old_row=player.get_row
-      old_col=player.get_col
-
+      old_row=player.row
+      old_col=player.col
       new_pos=dir2_pos(old_row,old_col,direction)
       put_player_2d(old_row,old_col,new_pos[@@ROW],new_pos[@@COL],player)
     end
 
-    # Se implementará en P3
     def add_block(orientation, start_row, start_col, length)
-      if orientation==Orientation.VERTICAL
+      if orientation==Orientation::VERTICAL
         inc_row=1
         inc_col=0
       else
@@ -119,7 +117,6 @@ module Irrgarten
     output
   end
 
-    # Público en esta práctica por indicación de la profesora
     def random_empty_pos
       loop do
         random_row = Dice.random_pos(@n_rows)
@@ -155,10 +152,7 @@ module Irrgarten
     end
 
     def can_step_on(row, col)
-      pos_ok(row, col) &&
-        (empty_pos(row, col) ||
-         monster_pos(row, col) ||
-         exit_pos(row, col))
+      pos_ok(row, col) && (empty_pos(row, col) || monster_pos(row, col) || exit_pos(row, col))
     end
 
     def update_old_pos(row, col)
@@ -189,7 +183,6 @@ module Irrgarten
       [new_row, new_col]
     end
 
-    # Se implementará en P3
     def put_player_2d(old_row, old_col, row, col, player)
       output=nil
       if can_step_on(row,col)
@@ -210,7 +203,7 @@ module Irrgarten
           @labyrinth[row][col]=@@COMBAT_CHAR
           output=@monsters[row][col]
         else
-          number=player.get_number
+          number=player.number
           @labyrinth[row][col]=number
         end
 
@@ -220,5 +213,8 @@ module Irrgarten
 
       output
     end
+  # Público únicamente para realizar pruebas en modo DEBUG
+  public :put_player_2d
+  end
 
 end

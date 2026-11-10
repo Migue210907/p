@@ -1,3 +1,4 @@
+#encoding:utf-8
 module Irrgarten
 
   class Game
@@ -5,34 +6,49 @@ module Irrgarten
     @@MAX_ROUNDS = 10
 
     def initialize(n_players, debug=false)
+
       @players = []
       @monsters = []
 
       n_players.times do |i|
-        @players << Player.new(i.to_s, Dice.random_intelligence, Dice.random_strength)
+
+        if debug
+          @players << Player.new(i.to_s,10.0,10.0)
+
+        else
+          @players << Player.new(i.to_s,Dice.random_intelligence,Dice.random_strength)
+        end
       end
 
-      @current_player_index = Dice.who_starts(n_players)
-      @current_player = @players[@current_player_index]
+
+      if debug
+        @current_player_index = 0
+      else
+        @current_player_index =
+          Dice.who_starts(n_players)
+      end
+
+      @current_player =
+        @players[@current_player_index]
 
       @log = ""
 
-      @labyrinth = Labyrinth.new(5, 5, 4, 4)
+      @labyrinth =
+        Labyrinth.new(5, 5, 4, 4)
 
       if debug
         configure_labyrinth_debug
       else
         configure_labyrinth
+        @labyrinth.spread_players(@players)
       end
-      
-      @labyrinth.spread_players(@players)
+
     end
 
 
     def finished
       @labyrinth.have_a_winner
     end
-
 
     def next_step(preferred_direction)
       @log=""
@@ -61,72 +77,49 @@ module Irrgarten
 
 
     def get_game_state
-      GameState.new(
-        @labyrinth.to_s,
-        @players.to_s,
-        @monsters.to_s,
-        @current_player_index,
-        finished,
-        @log
-      )
+      GameState.new(@labyrinth.to_s,@players.map(&:to_s).join("\n"),@monsters.map(&:to_s).join("\n"),@current_player_index,finished,@log)
     end
-
 
     private
 
-
     def configure_labyrinth
-      @labyrinth.add_block(
-        Orientation::VERTICAL,
-        1,
-        1,
-        2
-      )
-
-      @labyrinth.add_block(
-        Orientation::HORIZONTAL,
-        3,
-        2,
-        2
-      )
+      @labyrinth.add_block(Orientation::VERTICAL,1,1,2)
+      @labyrinth.add_block(Orientation::HORIZONTAL,3,2,2)
 
       n_monsters = 2
 
       n_monsters.times do |i|
-        monster = Monster.new(
-          "Monster ##{i}",
-          Dice.random_intelligence,
-          Dice.random_strength
-        )
+        monster = Monster.new("Monster ##{i}", Dice.random_intelligence, Dice.random_strength)
 
         @monsters << monster
 
         pos = @labyrinth.random_empty_pos
 
-        @labyrinth.add_monster(
-          pos[0],
-          pos[1],
-          monster
-        )
+        @labyrinth.add_monster(pos[0],pos[1],monster)
       end
     end
 
     def configure_labyrinth_debug
-      @labyrinth.add_block(Orientation::VERTICAL, 1, 1, 2)
-      
-      monster = Monster.new("Monster #Debug", Dice.random_intelligence, Dice.random_strength)
+      @labyrinth.add_block(Orientation::VERTICAL,1,1,2)
+      @labyrinth.add_block(Orientation::HORIZONTAL,3,2,2)
+
+      # Jugador 0 en (0,0)
+      @labyrinth.put_player_2d(-1, -1, 0, 0, @player[0])
+
+      # Jugador 1 en (0,4)
+      if @players.size > 1
+        @labyrinth.put_player_2d(-1,-1,0,4,@players[1])
+      end
+
+      # Monstruo débil debajo del jugador 0
+      monster = Monster.new("Monster #Debug",0.0,0.0)
       @monsters << monster
-      
-      @labyrinth.add_monster(1, 0, monster)
+      @labyrinth.add_monster(1,0,monster)
     end
 
-
     def next_player
-      @current_player_index =
-        (@current_player_index + 1) % @players.size
-
-      @current_player =
-        @players[@current_player_index]
+      @current_player_index = (@current_player_index + 1) % @players.size
+      @current_player = @players[@current_player_index]
     end
 
 
@@ -169,7 +162,6 @@ module Irrgarten
       end
     end
 
-
     def manage_resurrection
       resurrect=Dice.resurrect_player
       if resurrect
@@ -180,36 +172,29 @@ module Irrgarten
       end
     end
 
-
     def log_player_won
       @log += "El jugador ha ganado el combate.\n"
     end
-
 
     def log_monster_won
       @log += "El monstruo ha ganado el combate.\n"
     end
 
-
     def log_resurrected
       @log += "El jugador ha resucitado.\n"
     end
-
 
     def log_player_skip_turn
       @log += "El jugador ha perdido el turno por estar muerto.\n"
     end
 
-
     def log_player_no_orders
       @log += "El jugador no ha seguido las instrucciones del jugador humano (no fue posible).\n"
     end
 
-
     def log_no_monster
       @log += "El jugador se ha movido a una celda vacía o no le ha sido posible moverse.\n"
     end
-
 
     def log_rounds(rounds, max)
       @log += "Se han producido #{rounds} de #{max} rondas de combate.\n"
