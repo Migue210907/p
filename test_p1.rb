@@ -44,13 +44,20 @@ module Irrgarten
       puts Dice.random_strength
 
       puts "\n=== DISCARD ==="
-      discarded = 0
-      100.times do
-        if Dice.discard_element(3)
-          discarded += 1
+      (0..5).each do |uses|
+        discarded = 0
+        not_discarded = 0
+        
+        100.times do
+          if Dice.discard_element(uses)
+            discarded += 1
+          else
+            not_discarded += 1
+          end
         end
+
+        puts "Usos #{uses}: true=#{discarded}, false=#{not_discarded}"
       end
-      puts "Descartados: #{discarded}"
     end
 
   end

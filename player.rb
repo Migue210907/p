@@ -86,12 +86,9 @@ module Irrgarten
     end
 
     def to_s
-      "Player { Name: #{@name}, Number: #{@number}, " \
-      "Intelligence: #{@intelligence}, Strength: #{@strength}, " \
-      "Health: #{@health}, Position: (#{@row}, #{@col}), " \
-      "Consecutive hits: #{@consecutive_hits}, " \
-      "Weapons: #{@weapons}, Shields: #{@shields} }"
+      "Player { Name: #{@name}, Number: #{@number}, Intelligence: #{@intelligence}, Strength: #{@strength}, Health: #{@health}, Position: (#{@row}, #{@col}), Consecutive hits: #{@consecutive_hits}, Weapons: [#{@weapons.map(&:to_s).join(', ')}], Shields: [#{@shields.map(&:to_s).join(', ')}] }"
     end
+
 
 
     private
