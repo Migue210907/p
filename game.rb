@@ -104,7 +104,7 @@ module Irrgarten
       @labyrinth.add_block(Orientation::HORIZONTAL,3,2,2)
 
       # Jugador 0 en (0,0)
-      @labyrinth.put_player_2d(-1, -1, 0, 0, @player[0])
+      @labyrinth.put_player_2d(-1, -1, 0, 0, @players[0])
 
       # Jugador 1 en (0,4)
       if @players.size > 1
